@@ -7,6 +7,9 @@
  Description: Managing two windows using PixelLab.
  */
 
+#ifdef MAIN
+#define MAIN
+
 #include "pixelLab.h"
 #ifdef WIN32
 #include <windows.h>
@@ -311,3 +314,5 @@ int main(int argc, char *argv[]) {
 
 	return 0;
 }
+
+#endif
