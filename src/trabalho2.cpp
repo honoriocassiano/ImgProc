@@ -15,11 +15,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "Debug.h"
+
 #include <iostream>
 #include <vector>
 
 #define CWIDTH 256
 #define CHEIGHT 256
+
+int WIDTH = 0;
+int HEIGHT = 0;
 
 #define BOX_SIZE 232
 
@@ -48,7 +53,7 @@ void idle() {
 	glutPostRedisplay();
 }
 
-static void display2(void) {
+static void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1, 1, 1, 1);
 	glLoadIdentity();
@@ -56,23 +61,26 @@ static void display2(void) {
 	glPushMatrix();
 
 	// View first image
-	float factor = std::min(CWIDTH / (float) img2->GetWidth(),
-			CHEIGHT / (float) img2->GetHeight());
+	float factor = std::min(WIDTH / ((float) img2->GetWidth() * 2),
+			HEIGHT / ((float) img2->GetHeight() * 2));
 
-	std::cout << factor << "\n";
+	float x = -1
+				+ ((WIDTH  - (img2->GetWidth()) * factor * 2)) / (WIDTH * 2.0f);
+		float y = ((HEIGHT - (img2->GetHeight()) * factor * 2)) / (HEIGHT * 2.0f);
 
-	glRasterPos2f(-1, 0);
+	glRasterPos2f(x, y);
 	glPixelZoom(factor, factor);
 
 	img2->ViewImage();
 
 	// View second image
-	factor = std::min(CWIDTH / (float) img->GetWidth(),
-			CHEIGHT / (float) img->GetHeight());
+	factor = std::min(WIDTH / ((float) img->GetWidth() * 2),
+			HEIGHT / ((float) img->GetHeight() * 2));
 
-	std::cout << factor << "\n";
+	x = ((WIDTH  - (img->GetWidth()) * factor * 2) / 2.0f) / (WIDTH * 2.0f);
+	y = ((HEIGHT  - (img->GetWidth()) * factor * 2) / 2.0f) / (HEIGHT * 2.0f);
 
-	glRasterPos2f(0, 0);
+	glRasterPos2f(x, y);
 	glPixelZoom(factor, factor);
 
 	img->ViewImage();
@@ -155,7 +163,8 @@ void init() {
 	imgOriginal->Read("figs/lenaGray.png");
 
 	imgOriginal2 = new PixelLab();
-	imgOriginal2->Read("figs/amazon.river.png");
+//	imgOriginal2->Read("figs/seila.bmp");
+	imgOriginal2->Read("figs/woman.png");
 
 	Point p1 = { 0.0f, 0.0f };
 	pts.push_back(p1);
@@ -192,10 +201,13 @@ int main(int argc, char *argv[]) {
 	///////////////////////////////////////////////////////////
 	// Display Window
 	glutSetWindow(window2); // Change current window to 2
-	glutDisplayFunc(display2);
+	glutDisplayFunc(display);
 	glutReshapeWindow(imgOriginal->GetWidth(), imgOriginal->GetHeight());
 	glutPositionWindow(25 + CWIDTH, 30);
 	glutKeyboardFunc(key);
+
+	WIDTH = imgOriginal->GetWidth();
+	HEIGHT = imgOriginal->GetHeight();
 
 	glutMainLoop();
 
