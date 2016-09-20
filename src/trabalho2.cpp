@@ -56,7 +56,10 @@ static void display2(void) {
 	glPushMatrix();
 
 	// View first image
-	float factor = CWIDTH / (img2->GetWidth() * 1.0f);
+	float factor = std::min(CWIDTH / (float) img2->GetWidth(),
+			CHEIGHT / (float) img2->GetHeight());
+
+	std::cout << factor << "\n";
 
 	glRasterPos2f(-1, 0);
 	glPixelZoom(factor, factor);
@@ -64,10 +67,15 @@ static void display2(void) {
 	img2->ViewImage();
 
 	// View second image
-	factor = CWIDTH / (img->GetWidth() * 1.0f);
+	factor = std::min(CWIDTH / (float) img->GetWidth(),
+			CHEIGHT / (float) img->GetHeight());
+
+	std::cout << factor << "\n";
 
 	glRasterPos2f(0, 0);
 	glPixelZoom(factor, factor);
+
+	img->ViewImage();
 
 	glPopMatrix();
 
